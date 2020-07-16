@@ -18,8 +18,6 @@
     */
     // ?
     var $contador = document.querySelector('[data-js="counter"]');
-    $contador.value = 0;
-
     var $btnStart = document.querySelector('[data-js="btn-start"]');
     var $btnStop = document.querySelector('[data-js="btn-stop"]');
     var $btnReset = document.querySelector('[data-js="btn-reset"]');
@@ -27,14 +25,16 @@
     var temporizador;
 
     function start() {
-        $contador.value++
+        $contador.value = +$contador.value + 1;
         temporizador = setTimeout(start, 1000)
     }
+
     function stop() {
         clearTimeout(temporizador);
     }
+    
     function reset() {
-        clearTimeout(temporizador);
+        stop();
         $contador.value = 0;
     }
 
