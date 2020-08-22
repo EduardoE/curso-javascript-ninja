@@ -51,29 +51,46 @@
         $visor.value = '0';
     }
 
-    function removeLastItemItIsAnOperator() {
-        if(isLastItemAnOperation()){
-            $visor.value = $visor.value.slice(0, -1);
+    function removeLastItemItIsAnOperator(number) {
+        if(isLastItemAnOperation(number)){
+            return number.slice(0, -1);
         }
+        return number;
     }
 
     function handleClickOperation() {
         
-        removeLastItemItIsAnOperator();
+        $visor.value = removeLastItemItIsAnOperator($visor.value);
         $visor.value += this.value;
     }
 
-    function isLastItemAnOperation() {
+    function isLastItemAnOperation(number) {
         var operations = ['+', '-', 'x', '÷'];
-        var lastItem = $visor.value.split('').pop();
+        var lastItem = number.split('').pop();
         return operations.some(function(operator) {
             return operator === lastItem;
         });
     }
 
     function handleClickEqual(){
-        removeLastItemItIsAnOperator();
-        console.log($visor.value.match(/\d/g));
+        $visor.value = removeLastItemItIsAnOperator($visor.value);
+        var allValues = $visor.value.match(/\d+[+-x÷]?/g);
+        $visor.value = allValues.reduce(function(accumulated, actual) {
+            var firstValue = accumulated.slice(0, -1);
+            var operator = accumulated.split('').pop();
+            var lastValue = removeLastItemItIsAnOperator(actual);
+            var lastOperator = isLastItemAnOperation(actual) ? actual.split('').pop() : '';
+            switch(operator) {
+                case '+':
+                    return (Number(firstValue) + Number(lastValue)) + lastOperator;
+                case '-':
+                    return (Number(firstValue) - Number(lastValue)) + lastOperator;
+                case 'x':
+                    return (Number(firstValue) * Number(lastValue)) + lastOperator;
+                case '÷':
+                    return (Number(firstValue) / Number(lastValue)) + lastOperator;
+            }
+        })
     }
 
 }) (window, document);
